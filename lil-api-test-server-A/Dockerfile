@@ -1,0 +1,6 @@
+FROM alpine:3.12
+RUN mkdir server/
+WORKDIR server/
+COPY lil-api-test-server-A .
+
+CMD ["./lil-api-test-server-A"]

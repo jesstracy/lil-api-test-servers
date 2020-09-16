@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lil-api-test-server-a
+  namespace: jessica-tracy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lil-api-test-server-a
+  template:
+    metadata:
+      labels:
+        app: lil-api-test-server-a
+    spec:
+      containers:
+      - name: lil-api-test-server-a
+        image: 256727351604.dkr.ecr.us-east-1.amazonaws.com/jessica:lil-ap-server-a
+        ports:
+        - containerPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx-internet
+  name: lil-api-test-server-a
+  namespace: jessica-tracy
+spec:
+  rules:
+  - host: lil-api-test-server-a.jessica-tracy.eks.staging-callrail.com
+    http:
+      paths:
+      - backend:
+          serviceName: lil-api-test-server-a
+          servicePort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lil-api-test-server-a
+  namespace: jessica-tracy
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: lil-api-test-server-a
+  sessionAffinity: None
+  type: ClusterIP
